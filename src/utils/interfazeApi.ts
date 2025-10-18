@@ -57,9 +57,26 @@ export interface InterfazeStreamChunk {
 }
 
 /**
+ * Get language instruction for the system prompt
+ */
+function getLanguageInstruction(language: string): string {
+  switch (language) {
+    case 'zh':
+      return 'Respond in Mandarin Chinese (中文).';
+    case 'ms':
+      return 'Respond in Bahasa Melayu.';
+    case 'ta':
+      return 'Respond in Tamil (தமிழ்).';
+    case 'en':
+    default:
+      return 'Respond in English.';
+  }
+}
+
+/**
  * Create a system message for the CareCover medical assistant
  */
-export function createSystemMessage(documents: ExtractedDocument[]): InterfazeMessage {
+export function createSystemMessage(documents: ExtractedDocument[], language: string = 'en'): InterfazeMessage {
   const documentContext = documents.length > 0 
     ? `\n\nYou have access to the following medical documents:\n${documents.map(doc => {
         const documentName = doc.parentTitle.includes(' - ') ? doc.parentTitle.split(' - ')[0] : doc.parentTitle;
@@ -70,6 +87,8 @@ export function createSystemMessage(documents: ExtractedDocument[]): InterfazeMe
       }).join('\n')}`
     : '';
 
+  const languageInstruction = getLanguageInstruction(language);
+  
   return {
     role: 'system',
     content: `Role & scope
@@ -84,7 +103,7 @@ Primary tasks
 ${documentContext}
 
 Conversation principles (mobile-first)
-	• Ask before you tell. Start with 1–2 targeted questions; don’t dump info.
+	• Ask before you tell. Start with 1–2 targeted questions; don't dump info.
 	• Chunk output. Keep paragraphs short; use bullets and mini-headings.
 	• Personalise. Use provided documents and facts; if missing, state assumptions and ask the next most useful question.
 	• Be transparent. If uncertain, say so and propose safe next steps.
@@ -113,8 +132,8 @@ Step-by-step flow (you drive this)
 	• Deadlines and typical processing time.
 	• Common mistakes to avoid (missing referral, exceeding submission window, non-panel visit, wrong form).
 5) Next steps + questions (end each turn):
-	• “Next actions” (1–2 bullets).
-	• “I still need” (ask 1–2 precise follow-ups to refine guidance).
+	• "Next actions" (1–2 bullets).
+	• "I still need" (ask 1–2 precise follow-ups to refine guidance).
 	• Offer to generate a claim checklist or appeal draft if relevant.
 
 Formatting rules (keep it readable on phones)
@@ -178,16 +197,18 @@ CAROUSEL_END
 Which option sounds best for you?
 
 When information is missing
-	• Say: “I don’t have enough detail to be precise.”
+	• Say: "I don't have enough detail to be precise."
 	• Offer two scenarios (best/worse typical) and the one document or answer that would disambiguate.
 
 Medical language
-	• Explain jargon in plain English, keep the original term in ( ) once, e.g., “scans (MRI)”.
+	• Explain jargon in plain English, keep the original term in ( ) once, e.g., "scans (MRI)".
 
 Multilingual
 If the user switches language (ZH/MS/TA), follow. Keep numbers/limits consistent.
 
-Remember: You are not a replacement for professional medical advice. Always encourage users to consult with healthcare providers for medical decisions.`
+Remember: You are not a replacement for professional medical advice. Always encourage users to consult with healthcare providers for medical decisions.
+
+${languageInstruction}`
   };
 }
 
@@ -196,12 +217,13 @@ Remember: You are not a replacement for professional medical advice. Always enco
  */
 export function convertMessagesToInterfaze(
   messages: Message[], 
-  documents: ExtractedDocument[]
+  documents: ExtractedDocument[],
+  language: string = 'en'
 ): InterfazeMessage[] {
   const interfazeMessages: InterfazeMessage[] = [];
   
   // Add system message with document context
-  interfazeMessages.push(createSystemMessage(documents));
+  interfazeMessages.push(createSystemMessage(documents, language));
   
   // Convert user and bot messages
   messages.forEach(message => {
@@ -231,13 +253,14 @@ export async function sendChatRequest(
     model?: string;
     temperature?: number;
     maxTokens?: number;
+    language?: string;
   } = {}
 ): Promise<InterfazeResponse> {
   if (!INTERFAZE_API_KEY) {
     throw new Error('Interfaze API key is not configured. Please add VITE_INTERFAZE_API_KEY to your .env file.');
   }
 
-  const interfazeMessages = convertMessagesToInterfaze(messages, documents);
+  const interfazeMessages = convertMessagesToInterfaze(messages, documents, options.language || 'en');
   
   const requestBody: InterfazeRequest = {
     model: options.model || 'interfaze-beta',
@@ -287,13 +310,14 @@ export async function* sendStreamingChatRequest(
     model?: string;
     temperature?: number;
     maxTokens?: number;
+    language?: string;
   } = {}
 ): AsyncGenerator<string, void, unknown> {
   if (!INTERFAZE_API_KEY) {
     throw new Error('Interfaze API key is not configured. Please add VITE_INTERFAZE_API_KEY to your .env file.');
   }
 
-  const interfazeMessages = convertMessagesToInterfaze(messages, documents);
+  const interfazeMessages = convertMessagesToInterfaze(messages, documents, options.language || 'en');
   
   const requestBody: InterfazeRequest = {
     model: options.model || 'interfaze-beta',

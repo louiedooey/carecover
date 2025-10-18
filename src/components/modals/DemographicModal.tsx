@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
-import { X, Save, User, Calendar, MapPin, Phone, Users } from 'lucide-react';
+import { X, Save, User, Calendar, MapPin } from 'lucide-react';
 import { DemographicInfo } from '../../types';
 import { useTranslation } from 'react-i18next';
 
 interface DemographicModalProps {
   onClose: () => void;
+  onProfileUpdate: (name: string) => void;
 }
 
-const DemographicModal: React.FC<DemographicModalProps> = ({ onClose }) => {
+const DemographicModal: React.FC<DemographicModalProps> = ({ onClose, onProfileUpdate }) => {
   const { t } = useTranslation();
   const [demographicInfo, setDemographicInfo] = useState<DemographicInfo>({
     id: '1',
-    fullName: 'John Doe',
+    fullName: '',
     dateOfBirth: new Date('1990-01-15'),
-    gender: 'Male',
-    address: '123 Main Street, Singapore 123456',
-    phoneNumber: '+65 9123 4567',
-    emergencyContact: '+65 9876 5432',
+    residencyStatus: 'Singapore Citizen',
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +23,10 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose }) => {
   const handleSave = () => {
     setDemographicInfo(formData);
     setIsEditing(false);
+    // Update profile name if it's not empty
+    if (formData.fullName.trim()) {
+      onProfileUpdate(formData.fullName.trim());
+    }
   };
 
   const handleCancel = () => {
@@ -62,7 +64,7 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose }) => {
                     <User className="w-5 h-5 text-gray-400" />
                     <label className="text-sm font-medium text-gray-700">{t('demographic.fullName')}</label>
                   </div>
-                  <p className="text-gray-900 font-medium">{demographicInfo.fullName}</p>
+                  <p className="text-gray-900 font-medium">{demographicInfo.fullName || 'Not provided'}</p>
                 </div>
 
                 {/* Date of Birth */}
@@ -76,41 +78,14 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose }) => {
                   </p>
                 </div>
 
-                {/* Gender */}
+                {/* Residency Status */}
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <User className="w-5 h-5 text-gray-400" />
-                    <label className="text-sm font-medium text-gray-700">{t('demographic.gender')}</label>
+                    <MapPin className="w-5 h-5 text-gray-400" />
+                    <label className="text-sm font-medium text-gray-700">{t('demographic.residencyStatus')}</label>
                   </div>
-                  <p className="text-gray-900 font-medium">{demographicInfo.gender}</p>
+                  <p className="text-gray-900 font-medium">{demographicInfo.residencyStatus}</p>
                 </div>
-
-                {/* Phone Number */}
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Phone className="w-5 h-5 text-gray-400" />
-                    <label className="text-sm font-medium text-gray-700">{t('demographic.phoneNumber')}</label>
-                  </div>
-                  <p className="text-gray-900 font-medium">{demographicInfo.phoneNumber}</p>
-                </div>
-              </div>
-
-              {/* Address */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-5 h-5 text-gray-400" />
-                  <label className="text-sm font-medium text-gray-700">{t('demographic.address')}</label>
-                </div>
-                <p className="text-gray-900 font-medium">{demographicInfo.address}</p>
-              </div>
-
-              {/* Emergency Contact */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Users className="w-5 h-5 text-gray-400" />
-                  <label className="text-sm font-medium text-gray-700">{t('demographic.emergencyContact')}</label>
-                </div>
-                <p className="text-gray-900 font-medium">{demographicInfo.emergencyContact}</p>
               </div>
 
               {/* Edit Button */}
@@ -130,7 +105,7 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose }) => {
                 {/* Full Name */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('demographic.fullName')}
+                    {t('demographic.fullName')} *
                   </label>
                   <input
                     type="text"
@@ -138,80 +113,43 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose }) => {
                     onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-carecover-blue focus:border-carecover-blue"
                     placeholder={t('demographic.enterFullName')}
+                    required
                   />
                 </div>
 
                 {/* Date of Birth */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('demographic.dateOfBirth')}
+                    {t('demographic.dateOfBirth')} *
                   </label>
                   <input
                     type="date"
                     value={formatDate(formData.dateOfBirth)}
                     onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: new Date(e.target.value) }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-carecover-blue focus:border-carecover-blue"
+                    required
                   />
                 </div>
 
-                {/* Gender */}
+                {/* Residency Status */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    {t('demographic.gender')}
+                    {t('demographic.residencyStatus')} *
                   </label>
                   <select
-                    value={formData.gender}
-                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                    value={formData.residencyStatus}
+                    onChange={(e) => setFormData(prev => ({ ...prev, residencyStatus: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-carecover-blue focus:border-carecover-blue"
+                    required
                   >
-                    <option value="Male">{t('demographic.male')}</option>
-                    <option value="Female">{t('demographic.female')}</option>
+                    <option value="Singapore Citizen">{t('demographic.singaporeCitizen')}</option>
+                    <option value="Singapore Permanent Resident">{t('demographic.singaporePR')}</option>
+                    <option value="Work Permit Holder">{t('demographic.workPermit')}</option>
+                    <option value="Student Pass Holder">{t('demographic.studentPass')}</option>
+                    <option value="Dependent Pass Holder">{t('demographic.dependentPass')}</option>
                     <option value="Other">{t('demographic.other')}</option>
-                    <option value="Prefer not to say">{t('demographic.preferNotToSay')}</option>
                   </select>
                 </div>
-
-                {/* Phone Number */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t('demographic.phoneNumber')}
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phoneNumber}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-carecover-blue focus:border-carecover-blue"
-                    placeholder="+65 9123 4567"
-                  />
-                </div>
-              </div>
-
-              {/* Address */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  {t('demographic.address')}
-                </label>
-                <textarea
-                  value={formData.address}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-carecover-blue focus:border-carecover-blue"
-                  placeholder={t('demographic.enterAddress')}
-                />
-              </div>
-
-              {/* Emergency Contact */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  {t('demographic.emergencyContact')}
-                </label>
-                <input
-                  type="tel"
-                  value={formData.emergencyContact}
-                  onChange={(e) => setFormData(prev => ({ ...prev, emergencyContact: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-carecover-blue focus:border-carecover-blue"
-                  placeholder="+65 9876 5432"
-                />
               </div>
 
               {/* Action Buttons */}

@@ -105,18 +105,13 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* User Profile */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-carecover-light-blue rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold text-lg">
-                {userProfile.initials}
-              </span>
+            <div className="w-12 h-12 bg-carecover-light-blue rounded-full flex items-center justify-center text-3xl">
+              🦄
             </div>
             <div>
               <h2 className="font-semibold text-gray-900 text-lg">
-                {userProfile.name}
+                {userProfile.hasCustomName ? userProfile.name : "Your Profile"}
               </h2>
-              <p className="text-sm text-gray-500">
-                NRIC: {userProfile.nric}
-              </p>
             </div>
           </div>
         </div>

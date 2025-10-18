@@ -3,6 +3,18 @@ export interface CarouselOption {
   points: string[];
 }
 
+export interface FileAttachment {
+  id: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+  fileUrl: string;
+  extractedText?: string;
+  extractionStatus: 'pending' | 'processing' | 'completed' | 'error';
+  extractionError?: string;
+  uploadedAt: Date;
+}
+
 export interface Message {
   id: string;
   content: string;
@@ -12,6 +24,7 @@ export interface Message {
   fileUrl?: string;
   fileName?: string;
   carouselOptions?: CarouselOption[];
+  attachments?: FileAttachment[];
 }
 
 export interface ExtractedDocument {
@@ -43,6 +56,7 @@ export interface UserProfile {
   name: string;
   initials: string;
   nric: string;
+  hasCustomName?: boolean;
 }
 
 export interface ModalState {
@@ -87,8 +101,5 @@ export interface DemographicInfo {
   id: string;
   fullName: string;
   dateOfBirth: Date;
-  gender: string;
-  address: string;
-  phoneNumber: string;
-  emergencyContact: string;
+  residencyStatus: string;
 }

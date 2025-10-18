@@ -61,11 +61,12 @@ const App: React.FC = () => {
     }
   }, [t, sessions.length]);
 
-  const userProfile: UserProfile = {
+  const [userProfile, setUserProfile] = useState<UserProfile>({
     name: 'John Doe',
     initials: 'JD',
     nric: '**** 1234A',
-  };
+    hasCustomName: false,
+  });
 
   const currentSession = sessions.find(session => session.id === currentSessionId);
 
@@ -123,6 +124,14 @@ const App: React.FC = () => {
     setModalState({ isOpen: false, type: null });
   };
 
+  const handleProfileUpdate = (name: string) => {
+    setUserProfile(prev => ({
+      ...prev,
+      name,
+      hasCustomName: true,
+    }));
+  };
+
   return (
     <DocumentProvider>
       <div className="flex h-screen bg-white font-inter">
@@ -146,6 +155,7 @@ const App: React.FC = () => {
           isSidebarOpen={isSidebarOpen}
           onDocumentExtracted={handleDocumentExtracted}
           onNewSession={handleNewSession}
+          onProfileUpdate={handleProfileUpdate}
         />
       </div>
     </DocumentProvider>

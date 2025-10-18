@@ -1,14 +1,104 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
-import { Message as MessageType, CarouselOption } from '../types';
+import { Message as MessageType, CarouselOption, FileAttachment } from '../types';
 import OptionCarousel from './OptionCarousel';
+import { FileText, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import 'highlight.js/styles/github.css';
 
 interface MessageProps {
   message: MessageType;
 }
+
+const FileAttachmentDisplay: React.FC<{ attachment: FileAttachment }> = ({ attachment }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const getStatusIcon = () => {
+    switch (attachment.extractionStatus) {
+      case 'completed':
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'error':
+        return <AlertCircle className="w-4 h-4 text-red-500" />;
+      case 'processing':
+        return <Clock className="w-4 h-4 text-yellow-500 animate-pulse" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-400" />;
+    }
+  };
+
+  const getStatusText = () => {
+    switch (attachment.extractionStatus) {
+      case 'completed':
+        return 'Extracted successfully';
+      case 'error':
+        return 'Extraction failed';
+      case 'processing':
+        return 'Processing...';
+      default:
+        return 'Pending';
+    }
+  };
+
+  return (
+    <div className="mt-3 border border-gray-200 rounded-lg p-3 bg-white">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-4 h-4 text-gray-500" />
+          <div>
+            <p className="text-sm font-medium text-gray-900">{attachment.fileName}</p>
+            <p className="text-xs text-gray-500">{formatFileSize(attachment.fileSize)}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          {getStatusIcon()}
+          <span className="text-xs text-gray-500">{getStatusText()}</span>
+        </div>
+      </div>
+
+      {attachment.extractionError && (
+        <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
+          {attachment.extractionError}
+        </div>
+      )}
+
+      {attachment.extractedText && attachment.extractionStatus === 'completed' && (
+        <div className="mt-3">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="flex items-center space-x-1 text-xs text-carecover-blue hover:text-carecover-blue/80 transition-colors"
+          >
+            {isExpanded ? (
+              <>
+                <ChevronUp className="w-3 h-3" />
+                <span>Hide extracted text</span>
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-3 h-3" />
+                <span>Show extracted text</span>
+              </>
+            )}
+          </button>
+
+          {isExpanded && (
+            <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700 max-h-40 overflow-y-auto">
+              <pre className="whitespace-pre-wrap font-sans">{attachment.extractedText}</pre>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Message: React.FC<MessageProps> = ({ message }) => {
   const isBot = message.sender === 'bot';
@@ -140,6 +230,15 @@ const Message: React.FC<MessageProps> = ({ message }) => {
               {carouselOptions && carouselOptions.length > 0 && (
                 <div className="mt-4">
                   <OptionCarousel options={carouselOptions} />
+                </div>
+              )}
+
+              {/* Render file attachments if present */}
+              {message.attachments && message.attachments.length > 0 && (
+                <div className="mt-4">
+                  {message.attachments.map((attachment) => (
+                    <FileAttachmentDisplay key={attachment.id} attachment={attachment} />
+                  ))}
                 </div>
               )}
             </div>

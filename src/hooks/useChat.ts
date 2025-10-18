@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Message, ChatSession } from '../types';
 import { sendChatRequest, sendStreamingChatRequest } from '../utils/interfazeApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export interface UseChatOptions {
   enableStreaming?: boolean;
@@ -19,6 +20,7 @@ export interface UseChatReturn {
 export function useChat(options: UseChatOptions = {}): UseChatReturn {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { currentLanguage } = useLanguage();
 
   const clearError = useCallback(() => {
     setError(null);
@@ -47,14 +49,33 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
       const messages = [...session.messages];
       const documents = [...session.documentCache.insurance, ...session.documentCache.medical];
 
+      // Include attachment text from recent messages in the context
+      const messagesWithAttachments = messages.map(message => {
+        if (message.attachments && message.attachments.length > 0) {
+          const attachmentTexts = message.attachments
+            .filter(attachment => attachment.extractedText && attachment.extractionStatus === 'completed')
+            .map(attachment => `[Document: ${attachment.fileName}]\n${attachment.extractedText}`)
+            .join('\n\n');
+          
+          if (attachmentTexts) {
+            return {
+              ...message,
+              content: message.content + (message.content ? '\n\n' : '') + attachmentTexts
+            };
+          }
+        }
+        return message;
+      });
+
       let botResponse = '';
 
       if (options.enableStreaming) {
         // Use streaming for real-time response
-        const streamGenerator = sendStreamingChatRequest(messages, documents, {
+        const streamGenerator = sendStreamingChatRequest(messagesWithAttachments, documents, {
           model: options.model,
           temperature: options.temperature,
-          maxTokens: options.maxTokens
+          maxTokens: options.maxTokens,
+          language: currentLanguage
         });
 
         // Create initial bot message
@@ -77,10 +98,11 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
         }
       } else {
         // Use regular API call
-        const response = await sendChatRequest(messages, documents, {
+        const response = await sendChatRequest(messagesWithAttachments, documents, {
           model: options.model,
           temperature: options.temperature,
-          maxTokens: options.maxTokens
+          maxTokens: options.maxTokens,
+          language: currentLanguage
         });
 
         botResponse = response.choices[0]?.message?.content || 'Sorry, I could not generate a response.';

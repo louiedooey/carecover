@@ -18,6 +18,7 @@ interface ChatAreaProps {
   isSidebarOpen: boolean;
   onDocumentExtracted: (document: ExtractedDocument) => void;
   onNewSession: () => void;
+  onProfileUpdate: (name: string) => void;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -27,6 +28,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   onSidebarToggle,
   onDocumentExtracted,
   onNewSession,
+  onProfileUpdate,
 }) => {
   const { t } = useTranslation();
   
@@ -36,6 +38,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     temperature: 0.7,
     maxTokens: 1000
   });
+
 
   const handleSendMessage = async (content: string) => {
     if (!session) {
@@ -155,7 +158,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       )}
       
       {modalState.isOpen && modalState.type === 'demographic' && (
-        <DemographicModal onClose={onModalClose} />
+        <DemographicModal onClose={onModalClose} onProfileUpdate={onProfileUpdate} />
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { reductoApi, ReductoApiError } from '../utils/reductoApi';
 import { analyzeInsuranceDocument } from '../utils/interfazeApi';
 import { useDocumentContext } from '../contexts/DocumentContext';
-import { FileUpload, ExtractedDocument } from '../types';
+import { FileUpload, ExtractedDocument, FileAttachment } from '../types';
 
 interface ExtractDocumentParams {
   file: FileUpload;
@@ -113,6 +113,45 @@ export const useDocumentExtraction = () => {
     }
   }, [dispatch]);
 
-  return { extractDocument };
+  const extractDocumentForChat = useCallback(async (file: File): Promise<{
+    attachment: FileAttachment;
+    extractedText: string;
+  }> => {
+    try {
+      // Create a blob URL for the file
+      const fileUrl = URL.createObjectURL(file);
+      
+      // Create initial attachment object
+      const attachment: FileAttachment = {
+        id: `attachment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        fileUrl,
+        extractionStatus: 'processing',
+        uploadedAt: new Date(),
+      };
+
+      // Extract text using Reducto API
+      const extractedText = await reductoApi.extractTextFromFile(file);
+
+      // Update attachment with extracted text
+      const completedAttachment: FileAttachment = {
+        ...attachment,
+        extractedText,
+        extractionStatus: 'completed',
+      };
+
+      return { attachment: completedAttachment, extractedText };
+    } catch (error) {
+      const errorMessage = error instanceof ReductoApiError 
+        ? error.message 
+        : 'Failed to extract text from file';
+      
+      throw new Error(errorMessage);
+    }
+  }, []);
+
+  return { extractDocument, extractDocumentForChat };
 };
 

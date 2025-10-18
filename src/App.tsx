@@ -131,7 +131,6 @@ const App: React.FC = () => {
           userProfile={userProfile}
           sessions={sessions}
           currentSessionId={currentSessionId}
-          onNewSession={handleNewSession}
           onSessionSwitch={handleSessionSwitch}
           onModalOpen={handleModalOpen}
           isOpen={isSidebarOpen}

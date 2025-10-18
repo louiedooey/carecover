@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const LanguageToggle: React.FC = () => {
   const { currentLanguage, setLanguage, availableLanguages } = useLanguage();
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
 
   const handleLanguageSelect = (languageCode: string) => {
     setLanguage(languageCode as any);

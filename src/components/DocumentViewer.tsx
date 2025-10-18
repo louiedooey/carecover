@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Copy, Check, Tag, Calendar, FileText, Download, Share2 } from 'lucide-react';
+import { X, Copy, Check, Tag, Calendar, FileText, Share2 } from 'lucide-react';
 import { StoredDocument } from '../contexts/DocumentContext';
 
 interface DocumentViewerProps {

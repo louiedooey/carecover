@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, FileText, Calendar, Shield, Plus, Menu, X, ChevronDown, ChevronRight, File, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { FileText, Calendar, Shield, X, ChevronDown, ChevronRight, File, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { UserProfile, ChatSession } from '../types';
 import { useDocumentContext, StoredDocument } from '../contexts/DocumentContext';
 import ExtractedTextModal from './ExtractedTextModal';
@@ -9,7 +9,6 @@ interface SidebarProps {
   userProfile: UserProfile;
   sessions: ChatSession[];
   currentSessionId: string;
-  onNewSession: () => void;
   onSessionSwitch: (sessionId: string) => void;
   onModalOpen: (type: 'insurance' | 'medical' | 'demographic') => void;
   isOpen: boolean;
@@ -20,13 +19,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   userProfile,
   sessions,
   currentSessionId,
-  onNewSession,
   onSessionSwitch,
   onModalOpen,
   isOpen,
   onToggle,
 }) => {
-  const { state, getDocumentsByCategory } = useDocumentContext();
+  const { state: _state, getDocumentsByCategory } = useDocumentContext();
   const { t } = useTranslation();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [selectedDocument, setSelectedDocument] = useState<StoredDocument | null>(null);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
-import PasswordScreen from './components/PasswordScreen';
+// Password wall temporarily disabled
+// import PasswordScreen from './components/PasswordScreen';
 import { ChatSession, ModalState, UserProfile, ExtractedDocument } from './types';
 import { DocumentProvider } from './contexts/DocumentContext';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +11,9 @@ import { initializeGA, trackSessionStart, trackSessionSwitch } from './utils/ana
 const App: React.FC = () => {
   const { t } = useTranslation();
   
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // Password wall temporarily disabled
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated] = useState<boolean>(true);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   
   const [currentSessionId, setCurrentSessionId] = useState<string>('');
@@ -161,9 +164,10 @@ const App: React.FC = () => {
 
   return (
     <DocumentProvider>
-      {!isAuthenticated ? (
+      {/* Password wall temporarily disabled - uncomment below to re-enable */}
+      {/* {!isAuthenticated ? (
         <PasswordScreen onAuthenticate={() => setIsAuthenticated(true)} />
-      ) : (
+      ) : ( */}
         <div className="flex h-screen bg-white font-inter">
           {/* Sidebar */}
           <Sidebar
@@ -188,7 +192,7 @@ const App: React.FC = () => {
             onProfileUpdate={handleProfileUpdate}
           />
         </div>
-      )}
+      {/* )} */}
     </DocumentProvider>
   );
 };

@@ -75,7 +75,7 @@ export function useEmergencyFlow(session: ChatSession | undefined): UseEmergency
         const message = generateFollowUpMessage(updated.severityLevel);
         
         if (session) {
-          const followUpId = scheduleFollowUp(session.id, delayMinutes, message);
+          scheduleFollowUp(session.id, delayMinutes, message);
           updated.followUpScheduled = new Date(Date.now() + delayMinutes * 60 * 1000);
         }
       }

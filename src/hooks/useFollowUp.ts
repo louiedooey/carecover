@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ChatSession, EmergencyContext } from '../types';
+import { EmergencyContext } from '../types';
 
 export interface FollowUpSchedule {
   id: string;
@@ -126,7 +126,7 @@ export function useFollowUp(): UseFollowUpReturn {
 // Helper functions for follow-up management
 export function calculateFollowUpDelay(
   severity: EmergencyContext['severityLevel'],
-  treatmentType: 'emergency' | 'consultation' | 'specialist'
+  _treatmentType: 'emergency' | 'consultation' | 'specialist'
 ): number {
   // Return delay in minutes
   switch (severity) {
@@ -145,7 +145,7 @@ export function calculateFollowUpDelay(
 
 export function generateFollowUpMessage(
   severity: EmergencyContext['severityLevel'],
-  facilityName?: string
+  _facilityName?: string
 ): string {
   const baseMessage = "How are you feeling now? Have you received treatment?";
   

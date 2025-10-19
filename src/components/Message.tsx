@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { Message as MessageType, CarouselOption, FileAttachment } from '../types';
 import OptionCarousel from './OptionCarousel';
-import { FileText, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock, CheckSquare, Square } from 'lucide-react';
+import { FileText, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock, Square } from 'lucide-react';
 import 'highlight.js/styles/github.css';
 
 interface MessageProps {

@@ -36,7 +36,8 @@ const App: React.FC = () => {
         documentCache: {
           insurance: [],
           medical: []
-        }
+        },
+        claimHistory: []
       };
       setSessions([initialSession]);
       setCurrentSessionId('1');
@@ -87,7 +88,8 @@ const App: React.FC = () => {
       documentCache: {
         insurance: [],
         medical: []
-      }
+      },
+      claimHistory: []
     };
     
     setSessions(prev => [...prev, newSession]);

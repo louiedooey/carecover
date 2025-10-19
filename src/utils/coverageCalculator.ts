@@ -128,7 +128,7 @@ export function calculateCoverage(
 
 function parseInsuranceCoverage(
   documents: ExtractedDocument[],
-  treatmentType: string
+  _treatmentType: string
 ): {
   panelCoverage: number;
   nonPanelCoverage: number;
@@ -290,7 +290,7 @@ function generateCoverageExplanation(
   coPay: number,
   isPanelProvider: boolean,
   conditions: CoverageConditions,
-  facility: HealthcareFacility
+  _facility: HealthcareFacility
 ): string {
   const parts: string[] = [];
   

@@ -172,7 +172,7 @@ const OptionCarousel: React.FC<OptionCarouselProps> = ({
                   h3: ({ children }) => <h3 className="text-sm font-bold mb-1 text-gray-900">{children}</h3>,
                 }}
               >
-                {option.points.map((point, pointIndex) => `• ${point}`).join('\n\n')}
+                {option.points.map((point) => `• ${point}`).join('\n\n')}
               </ReactMarkdown>
             </div>
           </div>

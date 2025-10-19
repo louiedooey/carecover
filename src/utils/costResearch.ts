@@ -189,8 +189,7 @@ export function getCostEstimateForFacility(
   if (procedureLower.includes('emergency') || procedureLower.includes('a&e')) {
     return {
       procedure: 'Emergency Visit',
-      costRange: facility.costRanges.emergency,
-      currency: 'SGD',
+      costRange: { ...facility.costRanges.emergency, currency: 'SGD' },
       source: facility.name,
       lastUpdated: new Date(),
       notes: `Emergency visit at ${facility.name}`
@@ -200,8 +199,7 @@ export function getCostEstimateForFacility(
   if (procedureLower.includes('consultation') || procedureLower.includes('gp')) {
     return {
       procedure: 'Consultation',
-      costRange: facility.costRanges.consultation,
-      currency: 'SGD',
+      costRange: { ...facility.costRanges.consultation, currency: 'SGD' },
       source: facility.name,
       lastUpdated: new Date(),
       notes: `Consultation at ${facility.name}`
@@ -211,8 +209,7 @@ export function getCostEstimateForFacility(
   if (procedureLower.includes('specialist')) {
     return {
       procedure: 'Specialist Consultation',
-      costRange: facility.costRanges.specialist,
-      currency: 'SGD',
+      costRange: { ...facility.costRanges.specialist, currency: 'SGD' },
       source: facility.name,
       lastUpdated: new Date(),
       notes: `Specialist consultation at ${facility.name}`
@@ -222,8 +219,7 @@ export function getCostEstimateForFacility(
   // Default to consultation cost
   return {
     procedure: 'Medical Consultation',
-    costRange: facility.costRanges.consultation,
-    currency: 'SGD',
+    costRange: { ...facility.costRanges.consultation, currency: 'SGD' },
     source: facility.name,
     lastUpdated: new Date(),
     notes: `Medical consultation at ${facility.name}`

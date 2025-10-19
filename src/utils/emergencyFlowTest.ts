@@ -1,11 +1,11 @@
 // Emergency Flow Integration Test
 // This file contains test utilities to verify the emergency flow implementation
 
-import { HealthcareFacility, getNearestFacilities } from '../data/singaporeHealthcare';
+import { HealthcareFacility } from '../data/singaporeHealthcare';
 import { parseLocationFromText, getHealthcareOptionsByLocation } from './locationHelper';
 import { calculateCoverage } from './coverageCalculator';
 import { createTreatmentPreparation } from './treatmentPrep';
-import { detectEmergencyFromMessage, getSeverityFromSymptoms } from './useEmergencyFlow';
+import { detectEmergencyFromMessage, getSeverityFromSymptoms } from '../hooks/useEmergencyFlow';
 import { Message } from '../types';
 
 // Test data

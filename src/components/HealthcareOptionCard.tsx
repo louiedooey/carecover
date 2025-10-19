@@ -50,12 +50,12 @@ const HealthcareOptionCard: React.FC<HealthcareOptionCardProps> = ({
 
   const getCostRange = () => {
     if (procedure.toLowerCase().includes('emergency')) {
-      return facility.costRanges.emergency;
+      return { ...facility.costRanges.emergency, currency: 'SGD' };
     }
     if (procedure.toLowerCase().includes('specialist')) {
-      return facility.costRanges.specialist;
+      return { ...facility.costRanges.specialist, currency: 'SGD' };
     }
-    return facility.costRanges.consultation;
+    return { ...facility.costRanges.consultation, currency: 'SGD' };
   };
 
   const costRange = getCostRange();

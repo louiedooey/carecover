@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Copy, Check, FileText, Download, Trash2 } from 'lucide-react';
 import { StoredDocument, useDocumentContext } from '../contexts/DocumentContext';
+import { getFileTypeDisplay } from '../utils/fileTypeHelper';
 
 interface ExtractedTextModalProps {
   document: StoredDocument | null;
@@ -113,7 +114,7 @@ const ExtractedTextModal: React.FC<ExtractedTextModalProps> = ({ document, onClo
                   </div>
                   <div>
                     <span className="text-gray-500">File Type:</span>
-                    <p className="font-medium">{document.type}</p>
+                    <p className="font-medium">{getFileTypeDisplay(document.type)}</p>
                   </div>
                   <div>
                     <span className="text-gray-500">Uploaded:</span>

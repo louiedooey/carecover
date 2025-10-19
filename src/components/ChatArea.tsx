@@ -9,6 +9,7 @@ import DemographicModal from './modals/DemographicModal';
 import { useChat } from '../hooks/useChat';
 import { useTranslation } from 'react-i18next';
 import LanguageToggle from './LanguageToggle';
+import Logo from './Logo';
 
 interface ChatAreaProps {
   session: ChatSession | undefined;
@@ -74,11 +75,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-carecover-light-blue to-carecover-teal rounded-lg flex items-center justify-center">
-                <div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                </div>
-              </div>
+              <Logo size="md" />
               <h1 className="text-xl font-bold text-gray-900">CareCover</h1>
             </div>
           </div>

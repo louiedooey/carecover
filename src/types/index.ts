@@ -50,6 +50,10 @@ export interface ChatSession {
     insurance: ExtractedDocument[];
     medical: ExtractedDocument[];
   };
+  // Emergency context for medical assistance flow
+  emergencyContext?: EmergencyContext;
+  // Claims history for coverage calculations
+  claimHistory: ClaimHistory[];
 }
 
 export interface UserProfile {
@@ -102,4 +106,47 @@ export interface DemographicInfo {
   fullName: string;
   dateOfBirth: Date;
   residencyStatus: string;
+}
+
+export interface EmergencyContext {
+  currentStep: 1 | 2 | 3 | 4;
+  severityLevel: 'minor' | 'moderate' | 'severe' | 'critical';
+  selectedCareOption?: string;
+  treatmentStartTime?: Date;
+  followUpScheduled?: Date;
+  symptoms: string[];
+  location?: string;
+  painLevel?: number;
+}
+
+export interface ClaimHistory {
+  id: string;
+  date: Date;
+  amount: number;
+  provider: string;
+  type: 'emergency' | 'outpatient' | 'inpatient' | 'specialist';
+  status: 'submitted' | 'approved' | 'rejected' | 'pending';
+  description: string;
+}
+
+export interface HealthcareOption {
+  facilityId: string;
+  facilityName: string;
+  type: 'hospital' | 'polyclinic' | 'gp' | 'specialist';
+  address: string;
+  phone: string;
+  costEstimate: {
+    min: number;
+    max: number;
+    currency: string;
+  };
+  waitTime: string;
+  coverage: {
+    percentage: number;
+    deductible: number;
+    coPay: number;
+    isPanelProvider: boolean;
+  };
+  distance?: string;
+  hasEmergency: boolean;
 }

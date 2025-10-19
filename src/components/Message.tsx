@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { Message as MessageType, CarouselOption, FileAttachment } from '../types';
 import OptionCarousel from './OptionCarousel';
-import { FileText, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { FileText, ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock, CheckSquare, Square } from 'lucide-react';
 import 'highlight.js/styles/github.css';
 
 interface MessageProps {
@@ -139,6 +139,49 @@ const Message: React.FC<MessageProps> = ({ message }) => {
 
   const { textContent, carouselOptions } = isBot ? parseCarouselContent(message.content) : { textContent: message.content };
   
+  // Convert \n escape sequences to actual newlines for proper markdown rendering
+  const processedTextContent = textContent ? textContent.replace(/\\n/g, '\n') : textContent;
+
+  // Parse structured content for emergency flow
+  const parseStructuredContent = (content: string) => {
+    const sections: Array<{ type: string; title: string; content: string[] }> = [];
+    
+    // Split content by markdown headers
+    const parts = content.split(/^## (.+)$/gm);
+    
+    for (let i = 1; i < parts.length; i += 2) {
+      const title = parts[i];
+      const content = parts[i + 1]?.trim();
+      
+      if (title && content) {
+        const lines = content.split('\n').filter(line => line.trim());
+        sections.push({
+          type: getSectionType(title),
+          title,
+          content: lines
+        });
+      }
+    }
+    
+    return sections;
+  };
+
+  const getSectionType = (title: string): string => {
+    const titleLower = title.toLowerCase();
+    if (titleLower.includes('required documents') || titleLower.includes('recommended documents')) {
+      return 'checklist';
+    }
+    if (titleLower.includes('questions') || titleLower.includes('instructions')) {
+      return 'list';
+    }
+    if (titleLower.includes('treatment summary') || titleLower.includes('claims documentation')) {
+      return 'info';
+    }
+    return 'default';
+  };
+
+  const structuredSections = isBot ? parseStructuredContent(processedTextContent || '') : [];
+  
   return (
     <div className={`flex ${isBot ? 'justify-start' : 'justify-end'} mb-6`}>
       <div className={`flex items-start space-x-3 max-w-3xl ${isBot ? 'flex-row' : 'flex-row-reverse space-x-reverse'}`}>
@@ -222,10 +265,65 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                     ),
                   }}
                 >
-                  {textContent}
+                  {processedTextContent}
                 </ReactMarkdown>
               )}
               
+              {/* Render structured content sections */}
+              {structuredSections.length > 0 && (
+                <div className="mt-4 space-y-4">
+                  {structuredSections.map((section, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4 bg-white">
+                      <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+                        {section.title}
+                      </h4>
+                      
+                      {section.type === 'checklist' && (
+                        <div className="space-y-2">
+                          {section.content.map((item, itemIndex) => (
+                            <div key={itemIndex} className="flex items-start space-x-2">
+                              <Square className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                              <span className="text-sm text-gray-700">{item.replace(/^[-*]\s*/, '')}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {section.type === 'list' && (
+                        <div className="space-y-2">
+                          {section.content.map((item, itemIndex) => (
+                            <div key={itemIndex} className="flex items-start space-x-2">
+                              <span className="text-carecover-blue mr-2 mt-0.5">•</span>
+                              <span className="text-sm text-gray-700">{item.replace(/^[-*]\s*/, '')}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {section.type === 'info' && (
+                        <div className="text-sm text-gray-700 leading-relaxed">
+                          {section.content.map((line, lineIndex) => (
+                            <p key={lineIndex} className="mb-2 last:mb-0">
+                              {line}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {section.type === 'default' && (
+                        <div className="space-y-2">
+                          {section.content.map((item, itemIndex) => (
+                            <div key={itemIndex} className="text-sm text-gray-700">
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Render carousel if present */}
               {carouselOptions && carouselOptions.length > 0 && (
                 <div className="mt-4">

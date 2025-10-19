@@ -324,6 +324,9 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({ onClose, onDocumentExtr
                     {t('insurance.uploadDescription')}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
+                    {t('insurance.uploadExamples')}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
                     {t('insurance.uploadSubtext')}
                   </p>
                 </div>

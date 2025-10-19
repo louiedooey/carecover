@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
+import PasswordScreen from './components/PasswordScreen';
 import { ChatSession, ModalState, UserProfile, ExtractedDocument } from './types';
 import { DocumentProvider } from './contexts/DocumentContext';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 const App: React.FC = () => {
   const { t } = useTranslation();
   
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   
   const [currentSessionId, setCurrentSessionId] = useState<string>('');
@@ -136,30 +138,34 @@ const App: React.FC = () => {
 
   return (
     <DocumentProvider>
-      <div className="flex h-screen bg-white font-inter">
-        {/* Sidebar */}
-        <Sidebar
-          userProfile={userProfile}
-          sessions={sessions}
-          currentSessionId={currentSessionId}
-          onSessionSwitch={handleSessionSwitch}
-          onModalOpen={handleModalOpen}
-          isOpen={isSidebarOpen}
-          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-        />
-        
-        {/* Main Chat Area */}
-        <ChatArea
-          session={currentSession}
-          modalState={modalState}
-          onModalClose={handleModalClose}
-          onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-          isSidebarOpen={isSidebarOpen}
-          onDocumentExtracted={handleDocumentExtracted}
-          onNewSession={handleNewSession}
-          onProfileUpdate={handleProfileUpdate}
-        />
-      </div>
+      {!isAuthenticated ? (
+        <PasswordScreen onAuthenticate={() => setIsAuthenticated(true)} />
+      ) : (
+        <div className="flex h-screen bg-white font-inter">
+          {/* Sidebar */}
+          <Sidebar
+            userProfile={userProfile}
+            sessions={sessions}
+            currentSessionId={currentSessionId}
+            onSessionSwitch={handleSessionSwitch}
+            onModalOpen={handleModalOpen}
+            isOpen={isSidebarOpen}
+            onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+          />
+          
+          {/* Main Chat Area */}
+          <ChatArea
+            session={currentSession}
+            modalState={modalState}
+            onModalClose={handleModalClose}
+            onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+            isSidebarOpen={isSidebarOpen}
+            onDocumentExtracted={handleDocumentExtracted}
+            onNewSession={handleNewSession}
+            onProfileUpdate={handleProfileUpdate}
+          />
+        </div>
+      )}
     </DocumentProvider>
   );
 };

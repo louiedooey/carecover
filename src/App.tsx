@@ -5,6 +5,7 @@ import PasswordScreen from './components/PasswordScreen';
 import { ChatSession, ModalState, UserProfile, ExtractedDocument } from './types';
 import { DocumentProvider } from './contexts/DocumentContext';
 import { useTranslation } from 'react-i18next';
+import { initializeGA, trackSessionStart, trackSessionSwitch } from './utils/analytics';
 
 const App: React.FC = () => {
   const { t } = useTranslation();
@@ -18,6 +19,13 @@ const App: React.FC = () => {
     type: null,
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
+  // Initialize Google Analytics when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      initializeGA('G-FLCP6DGXW8');
+    }
+  }, [isAuthenticated]);
 
   // Create initial session and update when language changes
   useEffect(() => {
@@ -43,6 +51,10 @@ const App: React.FC = () => {
       };
       setSessions([initialSession]);
       setCurrentSessionId('1');
+      // Track initial session start
+      if (isAuthenticated) {
+        trackSessionStart('1');
+      }
     } else {
       // Update existing sessions' welcome message when language changes
       setSessions(prev => prev.map(session => {
@@ -96,6 +108,11 @@ const App: React.FC = () => {
     
     setSessions(prev => [...prev, newSession]);
     setCurrentSessionId(newSession.id);
+    
+    // Track new session start
+    if (isAuthenticated) {
+      trackSessionStart(newSession.id);
+    }
   };
 
   const handleDocumentExtracted = (document: ExtractedDocument) => {
@@ -117,7 +134,13 @@ const App: React.FC = () => {
   };
 
   const handleSessionSwitch = (sessionId: string) => {
+    const previousSessionId = currentSessionId;
     setCurrentSessionId(sessionId);
+    
+    // Track session switch
+    if (isAuthenticated && previousSessionId && previousSessionId !== sessionId) {
+      trackSessionSwitch(previousSessionId, sessionId);
+    }
   };
 
   const handleModalOpen = (type: 'insurance' | 'medical' | 'demographic') => {

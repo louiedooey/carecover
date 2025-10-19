@@ -89,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar */}
       <div className={`
         fixed lg:relative inset-y-0 left-0 z-50
-        w-80 bg-white border-r border-gray-200
+        w-80 bg-white/95 backdrop-blur-sm border-r border-gray-200
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         flex flex-col
@@ -133,7 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   <div className="flex items-center">
                     <button
                       onClick={item.onClick}
-                      className="flex-1 flex items-center space-x-3 px-4 py-3 text-left rounded-lg hover:bg-carecover-light-blue hover:bg-opacity-10 transition-colors group"
+                      className="flex-1 flex items-center space-x-3 px-4 py-3 text-left rounded-lg hover:bg-carecover-light-blue hover:bg-opacity-10 transition-all duration-200 hover-lift group"
                     >
                       <Icon className="w-5 h-5 text-gray-600 group-hover:text-carecover-blue" />
                       <span className="text-gray-700 group-hover:text-carecover-blue font-medium">
@@ -148,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {hasDocuments && (
                       <button
                         onClick={() => toggleSection(item.id)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 hover-scale"
                       >
                         {isExpanded ? (
                           <ChevronDown className="w-4 h-4 text-gray-500" />
@@ -166,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <button
                           key={doc.id}
                           onClick={() => setSelectedDocument(doc)}
-                          className="w-full flex items-center space-x-2 px-3 py-2 text-sm bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                          className="w-full flex items-center space-x-2 px-3 py-2 text-sm bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-200 hover-lift text-left"
                         >
                           <File className="w-4 h-4 text-gray-400" />
                           <span className="flex-1 text-gray-600 truncate">
@@ -194,9 +194,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 key={session.id}
                 onClick={() => onSessionSwitch(session.id)}
                 className={`
-                  w-full text-left px-4 py-3 rounded-lg transition-colors
+                  w-full text-left px-4 py-3 rounded-lg transition-all duration-200 hover-lift
                   ${session.id === currentSessionId
-                    ? 'bg-carecover-light-blue bg-opacity-20 text-carecover-blue'
+                    ? 'bg-carecover-light-blue bg-opacity-20 text-carecover-blue shadow-md'
                     : 'hover:bg-gray-100 text-gray-700'
                   }
                 `}

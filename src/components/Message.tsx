@@ -74,7 +74,7 @@ const FileAttachmentDisplay: React.FC<{ attachment: FileAttachment }> = ({ attac
         <div className="mt-3">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center space-x-1 text-xs text-carecover-blue hover:text-carecover-blue/80 transition-colors"
+            className="flex items-center space-x-1 text-xs text-carecover-blue hover:text-carecover-blue/80 transition-all duration-200 hover-scale"
           >
             {isExpanded ? (
               <>
@@ -187,9 +187,9 @@ const Message: React.FC<MessageProps> = ({ message }) => {
       <div className={`flex items-start space-x-3 max-w-3xl ${isBot ? 'flex-row' : 'flex-row-reverse space-x-reverse'}`}>
         {/* Avatar */}
         <div className={`
-          w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+          w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-md
           ${isBot 
-            ? 'bg-carecover-light-blue' 
+            ? 'bg-carecover-light-blue animate-pulse-glow' 
             : 'bg-gray-300'
           }
         `}>
@@ -204,7 +204,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         
         {/* Message Content */}
         <div className={`
-          px-4 py-3 rounded-2xl max-w-full
+          px-4 py-3 rounded-2xl max-w-full shadow-lg animate-slide-up
           ${isBot 
             ? 'bg-gray-100 text-gray-800' 
             : 'bg-carecover-blue text-white'

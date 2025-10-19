@@ -11,10 +11,10 @@ export default {
       },
       colors: {
         'carecover': {
-          'blue': '#3B82F6',
-          'light-blue': '#60A5FA',
-          'teal': '#14B8A6',
-          'light-teal': '#5EEAD4',
+          'blue': '#10b3b1',
+          'light-blue': '#5dd4d2',
+          'teal': '#10b3b1',
+          'light-teal': '#5dd4d2',
         }
       },
       spacing: {

@@ -7,6 +7,7 @@ import { ChatSession, ModalState, UserProfile, ExtractedDocument } from './types
 import { DocumentProvider } from './contexts/DocumentContext';
 import { useTranslation } from 'react-i18next';
 import { initializeGA, trackSessionStart, trackSessionSwitch } from './utils/analytics';
+import UnicornGreeting from './components/UnicornGreeting';
 
 const App: React.FC = () => {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ const App: React.FC = () => {
     type: null,
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [showUnicornGreeting, setShowUnicornGreeting] = useState<boolean>(false);
 
   // Initialize Google Analytics when authenticated
   useEffect(() => {
@@ -54,6 +56,12 @@ const App: React.FC = () => {
       };
       setSessions([initialSession]);
       setCurrentSessionId('1');
+      // Show unicorn greeting for new users
+      const hasSeenGreeting = localStorage.getItem('carecover-has-seen-greeting');
+      if (!hasSeenGreeting) {
+        setShowUnicornGreeting(true);
+        localStorage.setItem('carecover-has-seen-greeting', 'true');
+      }
       // Track initial session start
       if (isAuthenticated) {
         trackSessionStart('1');
@@ -168,7 +176,7 @@ const App: React.FC = () => {
       {/* {!isAuthenticated ? (
         <PasswordScreen onAuthenticate={() => setIsAuthenticated(true)} />
       ) : ( */}
-        <div className="flex h-screen bg-white font-inter">
+        <div className="flex h-screen bg-gradient-to-br from-teal-50/40 via-white to-cyan-50/30 font-inter">
           {/* Sidebar */}
           <Sidebar
             userProfile={userProfile}
@@ -192,6 +200,15 @@ const App: React.FC = () => {
             onProfileUpdate={handleProfileUpdate}
           />
         </div>
+
+        {/* Unicorn Greeting */}
+        {showUnicornGreeting && (
+          <UnicornGreeting 
+            onClose={() => setShowUnicornGreeting(false)}
+            autoClose={true}
+            autoCloseDelay={4000}
+          />
+        )}
       {/* )} */}
     </DocumentProvider>
   );

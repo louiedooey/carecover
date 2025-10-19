@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, User, Calendar, MapPin } from 'lucide-react';
+import { X, Save, User, Calendar, MapPin, Edit2 } from 'lucide-react';
 import { DemographicInfo } from '../../types';
 import { useTranslation } from 'react-i18next';
 
@@ -89,12 +89,13 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose, onProfileU
               </div>
 
               {/* Edit Button */}
-              <div className="pt-4">
+              <div className="pt-4 flex justify-end">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-6 py-3 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-colors font-medium"
+                  className="flex items-center space-x-2 px-6 py-3 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-all duration-200 hover-scale btn-active font-medium"
                 >
-                  {t('demographic.editInformation')}
+                  <Edit2 className="w-5 h-5" />
+                  <span>{t('demographic.editInformation')}</span>
                 </button>
               </div>
             </div>
@@ -153,19 +154,19 @@ const DemographicModal: React.FC<DemographicModalProps> = ({ onClose, onProfileU
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-3 pt-4">
-                <button
-                  onClick={handleSave}
-                  className="flex items-center space-x-2 px-6 py-3 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-colors font-medium"
-                >
-                  <Save className="w-5 h-5" />
-                  <span>{t('demographic.saveChanges')}</span>
-                </button>
+              <div className="flex justify-end space-x-3 pt-4">
                 <button
                   onClick={handleCancel}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 hover-scale btn-active font-medium"
                 >
                   {t('common.cancel')}
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="flex items-center space-x-2 px-6 py-3 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-all duration-200 hover-scale btn-active font-medium"
+                >
+                  <Save className="w-5 h-5" />
+                  <span>Save and Close</span>
                 </button>
               </div>
             </div>

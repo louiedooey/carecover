@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Plus, AlertCircle } from 'lucide-react';
+import { Menu, Plus, AlertCircle, X } from 'lucide-react';
 import { ChatSession, ModalState, ExtractedDocument } from '../types';
 import Message from './Message';
 import ChatInput from './ChatInput';
@@ -27,6 +27,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   modalState,
   onModalClose,
   onSidebarToggle,
+  isSidebarOpen,
   onDocumentExtracted,
   onNewSession,
   onProfileUpdate,
@@ -62,21 +63,25 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   return (
     <div className="flex-1 flex flex-col h-screen">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {/* Mobile menu button */}
             <button
               onClick={onSidebarToggle}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover-scale btn-active"
             >
-              <Menu className="w-5 h-5 text-gray-600" />
+              {isSidebarOpen ? (
+                <X className="w-5 h-5 text-gray-600" />
+              ) : (
+                <Menu className="w-5 h-5 text-gray-600" />
+              )}
             </button>
             
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <Logo size="md" />
-              <h1 className="text-xl font-bold text-gray-900">CareCover</h1>
+              <h1 className="hidden md:block text-xl font-bold text-gray-900">CareCover</h1>
             </div>
           </div>
           
@@ -84,11 +89,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             <LanguageToggle />
             <button
               onClick={onNewSession}
-              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-carecover-blue hover:bg-carecover-blue/90 text-white font-semibold rounded-lg transition-colors text-sm sm:text-base"
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-carecover-blue hover:bg-carecover-blue/90 text-white font-semibold rounded-lg transition-all duration-200 text-sm sm:text-base shadow-lg hover:shadow-xl hover-scale hover-glow btn-active"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">{t('chat.newSession')}</span>
-              <span className="sm:hidden">+</span>
             </button>
           </div>
         </div>

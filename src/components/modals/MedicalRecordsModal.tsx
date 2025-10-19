@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, Upload, FileText, Trash2, AlertCircle } from 'lucide-react';
+import { X, Upload, FileText, Trash2, AlertCircle, Save } from 'lucide-react';
 import { FileUpload, ExtractedDocument } from '../../types';
 import { useDocumentContext } from '../../contexts/DocumentContext';
 import { useDocumentExtraction } from '../../hooks/useDocumentExtraction';
@@ -148,8 +148,9 @@ const MedicalRecordsModal: React.FC<MedicalRecordsModalProps> = ({ onClose, onDo
           <div className="flex items-center space-x-3">
             <button
               onClick={onClose}
-              className="flex items-center space-x-2 px-4 py-2 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-colors font-medium"
+              className="flex items-center space-x-2 px-4 py-2 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-all duration-200 hover-scale btn-active font-medium"
             >
+              <Save className="w-5 h-5" />
               <span>Save and Close</span>
             </button>
             <button

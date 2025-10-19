@@ -269,8 +269,9 @@ const InsuranceModal: React.FC<InsuranceModalProps> = ({ onClose, onDocumentExtr
             </button>
             <button
               onClick={onClose}
-              className="flex items-center space-x-2 px-4 py-2 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-colors font-medium"
+              className="flex items-center space-x-2 px-4 py-2 bg-carecover-blue text-white rounded-lg hover:bg-carecover-blue/90 transition-all duration-200 hover-scale btn-active font-medium"
             >
+              <Save className="w-5 h-5" />
               <span>Save and Close</span>
             </button>
             <button
